@@ -294,6 +294,7 @@ class playGame extends Phaser.Scene {
   update () {
     // game over
     if (this.player.y > game.config.height) {
+      alert('Game over')
       this.scene.start('PlayGame')
     }
     this.player.x = gameOptions.playerStartPosition
