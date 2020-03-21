@@ -38,7 +38,10 @@ let gameOptions = {
   jumps: 2,
 
   // % of probability a coin appears on the platform
-  coinPercent: 25
+  coinPercent: 25,
+
+  // % of probability crystal appears on the platform
+  enemyPercent: 25
 }
 
 window.onload = function () {
@@ -68,6 +71,8 @@ class preloadGame extends Phaser.Scene {
   }
   preload () {
     this.load.image('platform', 'assets/platform.png')
+
+    this.load.image('enemy', 'assets/crystal.png')
 
     // player is a sprite sheet made by 24x48 pixels
     this.load.spritesheet('player', 'assets/player.png', {
@@ -160,6 +165,22 @@ class playGame extends Phaser.Scene {
       }
     })
 
+    // group with all active enemies
+    this.enemyGroup = this.add.group({
+      // once an enemy is removed, it's added to the pool
+      removeCallback: function (enemy) {
+        enemy.scene.enemyPool.add(enemy)
+      }
+    })
+
+    // enemy pool
+    this.enemyPool = this.add.group({
+      // once an enemy is removed from the pool, it's added to the active enemy group
+      removeCallback: function (enemy) {
+        enemy.scene.enemyGroup.add(enemy)
+      }
+    })
+
     // adding a mountain
     this.addMountains()
 
@@ -178,7 +199,7 @@ class playGame extends Phaser.Scene {
     this.player.setDepth(2)
 
     // setting collisions between the player and the platform group
-    this.physics.add.collider(this.player, this.platformGroup, function () {
+    this.platformCollider = this.physics.add.collider(this.player, this.platformGroup, function () {
       // play "run" animation if the player is on a platform
       if (!this.player.anims.isPlaying) {
         this.player.anims.play('run')
@@ -199,6 +220,14 @@ class playGame extends Phaser.Scene {
           this.coinGroup.remove(coin)
         }
       })
+    }, null, this)
+
+    // setting collisions between th player and the enemy group
+    this.physics.add.overlap(this.player, this.enemyGroup, function (player, enemy) {
+      this.dying = true
+      this.player.anims.stop()
+      this.player.setFrame(2)
+      this.physics.world.removeCollider(this.platformCollider)
     }, null, this)
 
     // checking for input
@@ -230,7 +259,7 @@ class playGame extends Phaser.Scene {
     return rightmostMountain
   }
 
-  // the core of the script: platform are added from the pool or created on the fly
+  // the core of the script: platforms are added from the pool or created on the fly
   addPlatform (platformWidth, posX, posY) {
     this.addedPlatforms++
     let platform
@@ -273,6 +302,25 @@ class playGame extends Phaser.Scene {
           coin.setDepth(2)
           this.coinGroup.add(coin)
         }
+      }
+    }
+
+    // is there an enemy over the platform?
+    if (Phaser.Math.Between(1, 100) <= gameOptions.percent) {
+      if (this.enemyPool.getLength()) {
+        let enemy = this.enemyPool.getFirst()
+        enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth)
+        enemy.y = posY - 46
+        enemy.alpha = 1
+        enemy.active = true
+        this.enemyPool.remove(enemy)
+      } else {
+        let enemy = this.physics.add.image(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 46, 'enemy')
+        enemy.setImmovable(true)
+        enemy.setVelocityX(platform.body.velocity.x)
+        enemy.setSize(8, 2, true)
+        enemy.setDepth(2)
+        this.enemyGroup.add(enemy)
       }
     }
   }
@@ -319,6 +367,14 @@ class playGame extends Phaser.Scene {
       if (coin.x < -coin.displayWidth / 2) {
         this.coinGroup.killAndHide(coin)
         this.coinGroup.remove(coin)
+      }
+    }, this)
+
+    // recycling enemies
+    this.enemyGroup.getChildren().forEach(function (enemy) {
+      if (enemy.x < -enemy.displayWidth / 2) {
+        this.enemyGroup.killAndHide(enemy)
+        this.enemyGroup.remove(enemy)
       }
     }, this)
 
