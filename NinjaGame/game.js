@@ -40,7 +40,7 @@ let gameOptions = {
   // % of probability a coin appears on the platform
   coinPercent: 25,
 
-  // % of probability crystal appears on the platform
+  // % of probability enemy appears on the platform
   enemyPercent: 25
 }
 
@@ -72,7 +72,7 @@ class preloadGame extends Phaser.Scene {
   preload () {
     this.load.image('platform', 'assets/platform.png')
 
-    this.load.image('enemy', 'assets/crystal.png')
+    this.load.image('enemy', 'assets/enemy.png')
 
     // player is a sprite sheet made by 24x48 pixels
     this.load.spritesheet('player', 'assets/player.png', {
@@ -404,7 +404,7 @@ class playGame extends Phaser.Scene {
   }
 }
 
-function resize () {
+function resize () {fp
   let canvas = document.querySelector('canvas')
   let windowWidth = window.innerWidth
   let windowHeight = window.innerHeight
