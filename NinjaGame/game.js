@@ -428,7 +428,7 @@ class playGame extends Phaser.Scene {
   }
 }
 
-function resize () {fp
+function resize () {
   let canvas = document.querySelector('canvas')
   let windowWidth = window.innerWidth
   let windowHeight = window.innerHeight
