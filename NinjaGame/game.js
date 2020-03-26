@@ -217,9 +217,9 @@ class playGame extends Phaser.Scene {
     this.player.setDepth(2)
 
     // adding the enemy
-    this.enemy = this.physics.add.sprite(gameOptions.playerStartPosition, game.config.height * 0.7, 'enemy')
-    this.enemy.setGravityY(gameOptions.playerGravity)
-    this.enemy.setDepth(2)
+    //this.enemy = this.physics.add.sprite(gameOptions.enemyStartPosition, game.config.height * 0.7, 'enemy')
+    //this.enemy.setGravityY(gameOptions.playerGravity)
+    //this.enemy.setDepth(2)
 
     // setting collisions between the player and the platform group
     this.platformCollider = this.physics.add.collider(this.player, this.platformGroup, function () {
