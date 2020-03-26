@@ -217,9 +217,9 @@ class playGame extends Phaser.Scene {
     this.player.setDepth(2)
 
     // adding the enemy
-    //this.enemy = this.physics.add.sprite(gameOptions.enemyStartPosition, game.config.height * 0.7, 'enemy')
-    //this.enemy.setGravityY(gameOptions.playerGravity)
-    //this.enemy.setDepth(2)
+    // this.enemy = this.physics.add.sprite(gameOptions.enemyStartPosition, game.config.height * 0.7, 'enemy')
+    // this.enemy.setGravityY(gameOptions.playerGravity)
+    // this.enemy.setDepth(2)
 
     // setting collisions between the player and the platform group
     this.platformCollider = this.physics.add.collider(this.player, this.platformGroup, function () {
@@ -246,12 +246,12 @@ class playGame extends Phaser.Scene {
     }, null, this)
 
     // setting collisions between the player and the enemy group
-    this.platformCollider = this.physics.add.collider(this.enemy, this.player, function (player, enemy) {
+    this.physics.add.overlap(this.player, this.enemyGroup, function (player, enemy) {
       this.dying = true
       this.player.anims.stop()
       this.player.setFrame(2)
       this.player.setVelocityY(-200)
-      // this.physics.world.removeCollider(this.platformCollider)
+      this.physics.world.removeCollider(this.platformCollider)
     }, null, this)
 
     // checking for input
