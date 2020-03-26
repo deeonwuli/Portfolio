@@ -69,10 +69,15 @@ class preloadGame extends Phaser.Scene {
   constructor () {
     super('PreloadGame')
   }
+
   preload () {
     this.load.image('platform', 'assets/platform.png')
 
-    this.load.image('enemy', 'assets/enemy.png')
+    // the enemy is a sprite sheet made by 24 by 48 pixels
+    this.load.spritesheet('enemy', 'assets/enemy.png', {
+      frameWidth: 24,
+      frameHeight: 48
+    })
 
     // player is a sprite sheet made by 24x48 pixels
     this.load.spritesheet('player', 'assets/player.png', {
@@ -92,6 +97,7 @@ class preloadGame extends Phaser.Scene {
       frameHeight: 512
     })
   }
+
   create () {
     // setting player animation
     this.anims.create({
@@ -116,6 +122,17 @@ class preloadGame extends Phaser.Scene {
       repeat: -1
     })
 
+    // setting enemy animation
+    this.anims.create({
+      key: 'run',
+      frames: this.anims.generateFrameNumbers('enemy', {
+        start: 0,
+        end: 1
+      }),
+      frameRate: 8,
+      repeat: -1
+    })
+
     this.scene.start('PlayGame')
   }
 }
@@ -125,6 +142,7 @@ class playGame extends Phaser.Scene {
   constructor () {
     super('PlayGame')
   }
+
   create () {
     // group with all active mountains.
     this.mountainGroup = this.add.group()
@@ -193,10 +211,15 @@ class playGame extends Phaser.Scene {
     // adding a platform to the game, the arguments are platform width, x position and y position
     this.addPlatform(game.config.width, game.config.width / 2, game.config.height * gameOptions.platformVerticalLimit[1])
 
-    // adding the player;
+    // adding the player
     this.player = this.physics.add.sprite(gameOptions.playerStartPosition, game.config.height * 0.7, 'player')
     this.player.setGravityY(gameOptions.playerGravity)
     this.player.setDepth(2)
+
+    // adding the enemy
+    this.enemy = this.physics.add.sprite(gameOptions.playerStartPosition, game.config.height * 0.7, 'enemy')
+    this.enemy.setGravityY(gameOptions.playerGravity)
+    this.enemy.setDepth(2)
 
     // setting collisions between the player and the platform group
     this.platformCollider = this.physics.add.collider(this.player, this.platformGroup, function () {
@@ -222,11 +245,12 @@ class playGame extends Phaser.Scene {
       })
     }, null, this)
 
-    // setting collisions between th player and the enemy group
-    this.physics.add.overlap(this.player, this.enemyGroup, function (player, enemy) {
+    // setting collisions between the player and the enemy group
+    this.platformCollider = this.physics.add.collider(this.enemy, this.player, function (player, enemy) {
       this.dying = true
       this.player.anims.stop()
       this.player.setFrame(2)
+      this.player.setVelocityY(-200)
       this.physics.world.removeCollider(this.platformCollider)
     }, null, this)
 
@@ -327,7 +351,8 @@ class playGame extends Phaser.Scene {
 
   // the player jumps when on the ground, or once in the air as long as there are jumps left and the first jump was on the ground
   jump () {
-    if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < gameOptions.jumps)) {
+    if((!this.dying) &amp;&amp; (this.player.body.touching.down || (this.playerJumps > 0 &amp;&amp; this.playerJumps < gameOptions.jumps))){
+    //if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < gameOptions.jumps)) {
       if (this.player.body.touching.down) {
         this.playerJumps = 0
       }
