@@ -251,7 +251,7 @@ class playGame extends Phaser.Scene {
       this.player.anims.stop()
       this.player.setFrame(2)
       this.player.setVelocityY(-200)
-      this.physics.world.removeCollider(this.platformCollider)
+      // this.physics.world.removeCollider(this.platformCollider)
     }, null, this)
 
     // checking for input
