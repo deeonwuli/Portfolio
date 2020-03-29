@@ -45,15 +45,15 @@ let gameOptions = {
 window.onload = function() {
   // object containing configuration options
   let gameConfig = {
-   type: Phaser.AUTO,
-   width: 1334,
-   height: 750,
-   scene: [preloadGame, playGame],
-   backgroundColor: 0x87ceeb,
-   // physics settings
-   physics: {
-    default: 'arcade'
-   }
+    type: Phaser.AUTO,
+    width: 1334,
+    height: 750,
+    scene: [preloadGame, playGame],
+    backgroundColor: 0x87CEFA,
+    // physics settings
+    physics: {
+      default: 'arcade'
+    }
   }
 
   game = new Phaser.Game(gameConfig) 
@@ -64,11 +64,11 @@ window.onload = function() {
 
 // preloadGame scene
 class preloadGame extends Phaser.Scene {
-  constructor(){
-   super('PreloadGame') 
+  constructor() {
+    super('PreloadGame') 
   }
 
-  preload(){
+  preload() {
     // platform is a tile sprite
     this.load.image('platform', 'platform.png') 
 
@@ -86,8 +86,8 @@ class preloadGame extends Phaser.Scene {
 
     // the enemy is a sprite sheet made by 24x48 pixels
     this.load.spritesheet('enemy', 'enemy.png', {
-     frameWidth: 24,
-     frameHeight: 48
+      frameWidth: 24,
+      frameHeight: 48
     })
 
     // mountains are a sprite sheet made by 512x512 pixels
@@ -97,7 +97,7 @@ class preloadGame extends Phaser.Scene {
     })
   }
 
-  create(){
+  create() {
     // setting player animation
     this.anims.create({
       key: 'run',
