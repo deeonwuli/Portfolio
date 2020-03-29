@@ -78,23 +78,23 @@ class preloadGame extends Phaser.Scene {
       frameHeight: 48
     })
 
-   // the coin is a sprite sheet made by 20x20 pixels
-   this.load.spritesheet('coin', 'coin.png', {
-    frameWidth: 20,
-    frameHeight: 20
-   })
+    // the coin is a sprite sheet made by 20x20 pixels
+    this.load.spritesheet('coin', 'coin.png', {
+      frameWidth: 20,
+      frameHeight: 20
+    })
 
-   // the enemy is a sprite sheet made by 24x48 pixels
-   this.load.spritesheet('enemy', 'enemy.png', {
-    frameWidth: 24,
-    frameHeight: 48
-   })
+    // the enemy is a sprite sheet made by 24x48 pixels
+    this.load.spritesheet('enemy', 'enemy.png', {
+     frameWidth: 24,
+     frameHeight: 48
+    })
 
-   // mountains are a sprite sheet made by 512x512 pixels
-   this.load.spritesheet('mountain', 'mountain.png', {
-    frameWidth: 512,
-    frameHeight: 512
-   })
+    // mountains are a sprite sheet made by 512x512 pixels
+    this.load.spritesheet('mountain', 'mountain.png', {
+      frameWidth: 512,
+      frameHeight: 512
+    })
   }
 
   create(){
