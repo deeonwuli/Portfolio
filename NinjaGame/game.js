@@ -64,7 +64,9 @@ class preloadGame extends Phaser.Scene {
   constructor () {
     super('PreloadGame')
   }
+
   preload () {
+    // platform is a tile sprite
     this.load.image('platform', 'assets/platform.png')
 
     // player is a sprite sheet made by 24x48 pixels
@@ -118,13 +120,13 @@ class playGame extends Phaser.Scene {
   constructor () {
     super('PlayGame')
   }
+
   create () {
     // group with all active mountains.
     this.mountainGroup = this.add.group()
 
     // group with all active platforms.
     this.platformGroup = this.add.group({
-
       // once a platform is removed, it's added to the pool
       removeCallback: function (platform) {
         platform.scene.platformPool.add(platform)
@@ -133,7 +135,6 @@ class playGame extends Phaser.Scene {
 
     // platform pool
     this.platformPool = this.add.group({
-
       // once a platform is removed from the pool, it's added to the active platforms group
       removeCallback: function (platform) {
         platform.scene.platformGroup.add(platform)
@@ -142,7 +143,6 @@ class playGame extends Phaser.Scene {
 
     // group with all active coins.
     this.coinGroup = this.add.group({
-
       // once a coin is removed, it's added to the pool
       removeCallback: function (coin) {
         coin.scene.coinPool.add(coin)
@@ -151,7 +151,6 @@ class playGame extends Phaser.Scene {
 
     // coin pool
     this.coinPool = this.add.group({
-
       // once a coin is removed from the pool, it's added to the active coins group
       removeCallback: function (coin) {
         coin.scene.coinGroup.add(coin)
@@ -170,7 +169,7 @@ class playGame extends Phaser.Scene {
     // adding a platform to the game, the arguments are platform width, x position and y position
     this.addPlatform(game.config.width, game.config.width / 2, game.config.height * gameOptions.platformVerticalLimit[1])
 
-    // adding the player;
+    // adding the player
     this.player = this.physics.add.sprite(gameOptions.playerStartPosition, game.config.height * 0.7, 'player')
     this.player.setGravityY(gameOptions.playerGravity)
     this.player.setDepth(2)
@@ -344,10 +343,6 @@ class playGame extends Phaser.Scene {
       this.addPlatform(nextPlatformWidth, game.config.width + nextPlatformWidth / 2, nextPlatformHeight)
     }
   }
-}
-
-function updateScore () {
-  scoreText.text = 'Score: ' + score
 }
 
 function resize () {
