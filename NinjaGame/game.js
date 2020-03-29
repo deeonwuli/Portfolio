@@ -237,8 +237,11 @@ class playGame extends Phaser.Scene {
 
     // setting collisions between the player and the enemy
     this.physics.add.collider(this.player, this.enemyGroup, function (player, enemy) {
+      if (!this.enemy.anims.isPlaying) {
+        this.enemy.anims.play('run')
+      }
       this.dying = true
-      this.player.anis.stop()
+      this.player.anims.stop()
       this.player.setFrame(2)
       this.player.setVelocityY(-200)
     }, null, this)
@@ -323,7 +326,7 @@ class playGame extends Phaser.Scene {
         if (this.enemyPool.getLength()) {
           let enemy = this.enemyPool.getFirst()
           enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(q, platformWidth)
-          enemy.y = posY - 46
+          enemy.y = posY
           enemy.alpha = 1
           enemy.active = true
           enemy.visible = true
