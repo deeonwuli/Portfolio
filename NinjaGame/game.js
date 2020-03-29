@@ -36,7 +36,10 @@ let gameOptions = {
   jumps: 2,
 
   // % of probability a coin appears on the platform
-  coinPercent: 25
+  coinPercent: 25,
+
+  // % of probability an enemy appears on the platform
+  enemyPercent: 25
 }
 
 window.onload = function () {
@@ -75,6 +78,12 @@ class preloadGame extends Phaser.Scene {
       frameHeight: 48
     })
 
+    // enemy is a sprite sheet made by 24x48 pixels
+    this.load.spritesheet('enemy', 'assets/enemy.png', {
+      frameWidth: 24,
+      frameHeight: 48
+    })
+
     // the coin is a sprite sheet made by 20x20 pixels
     this.load.spritesheet('coin', 'assets/coin.png', {
       frameWidth: 20,
@@ -87,6 +96,7 @@ class preloadGame extends Phaser.Scene {
       frameHeight: 512
     })
   }
+
   create () {
     // setting player animation
     this.anims.create({
@@ -108,6 +118,17 @@ class preloadGame extends Phaser.Scene {
       }),
       frameRate: 15,
       yoyo: true,
+      repeat: -1
+    })
+
+    // setting enemy animation
+    this.anims.create({
+      key: 'run',
+      frames: this.anims.generateFrameNumbers('enemy', {
+        start: 0,
+        end: 1
+      }),
+      frameRate: 8,
       repeat: -1
     })
 
@@ -157,6 +178,22 @@ class playGame extends Phaser.Scene {
       }
     })
 
+    // group with all active enemies
+    this.enemyGroup = this.add.group({
+      // once an ememy is removed, it is added to the group
+      removeCallback: function (enemy) {
+        enemy.scene.enemyPool.add(enemy)
+      }
+    })
+
+    // enemy pool
+    this.enemyPool = this.add.group({
+      // once an ememy is removed from the pool, it is added to the active coin group
+      removeCallback: function (enemy) {
+        enemy.scene.enemyGroup.add(enemy)
+      }
+    })
+
     // adding a mountain
     this.addMountains()
 
@@ -196,6 +233,14 @@ class playGame extends Phaser.Scene {
           this.coinGroup.remove(coin)
         }
       })
+    }, null, this)
+
+    // setting collisions between the player and the enemy
+    this.physics.add.collider(this.player, this.enemyGroup, function (player, enemy) {
+      this.dying = true
+      this.player.anis.stop()
+      this.player.setFrame(2)
+      this.player.setVelocityY(-200)
     }, null, this)
 
     // checking for input
@@ -251,8 +296,9 @@ class playGame extends Phaser.Scene {
     }
     this.nextPlatformDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1])
 
-    // is there a coin over the platform?
+    // if this is not the starting platform
     if (this.addedPlatforms > 1) {
+      // is there a coin over the platform?
       if (Phaser.Math.Between(1, 100) <= gameOptions.coinPercent) {
         if (this.coinPool.getLength()) {
           let coin = this.coinPool.getFirst()
@@ -269,6 +315,26 @@ class playGame extends Phaser.Scene {
           coin.anims.play('rotate')
           coin.setDepth(2)
           this.coinGroup.add(coin)
+        }
+      }
+
+      // is there an enemy over the platform?
+      if (Phaser.Math.Between(1, 100) <= gameOptions.enemyPercent) {
+        if (this.enemyPool.getLength()) {
+          let enemy = this.enemyPool.getFirst()
+          enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(q, platformWidth)
+          enemy.y = posY - 46
+          enemy.alpha = 1
+          enemy.active = true
+          enemy.visible = true
+          this.enemyPool.remove(enemy)
+        } else {
+          let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 46, 'enemy')
+          enemy.setVelocityX(platform.body.velocity.x)
+          enemy.setSize(8, 2, true)
+          enemy.anims.play('run')
+          enemy.setDepth(2)
+          enemy.enemyGroup.add(enemy)
         }
       }
     }
@@ -329,6 +395,14 @@ class playGame extends Phaser.Scene {
         if (Phaser.Math.Between(0, 1)) {
           mountain.setDepth(1)
         }
+      }
+    }, this)
+
+    // recycling enemies
+    this.enemyGroup.getChildren().forEach(function (enemy) {
+      if (enemy.x < -enemy.displayWidth / 2) {
+        this.enemyGroup.killAndHide(enemy)
+        this.enemyGroup.remove(enemy)
       }
     }, this)
 
