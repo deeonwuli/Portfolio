@@ -324,13 +324,13 @@ class playGame extends Phaser.Scene {
         if (this.enemyPool.getLength()) {
           let enemy = this.enemyPool.getFirst()
           enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth)
-          enemy.y = posY + 46
+          enemy.y = posY
           enemy.alpha = 1
           enemy.active = true
           enemy.visible = true
           this.enemyPool.remove(enemy)
         } else {
-          let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 46, 'enemy')
+          let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY, 'enemy')
           enemy.setImmovable(true)
           enemy.setVelocityX(platform.body.velocity.x)
           enemy.setSize(8, 2, true)
