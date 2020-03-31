@@ -123,7 +123,7 @@ class preloadGame extends Phaser.Scene {
 
     // setting enemy animation
     this.anims.create({
-      key: 'run',
+      key: 'jog',
       frames: this.anims.generateFrameNumbers('enemy', {
         start: 0,
         end: 1
@@ -238,7 +238,7 @@ class playGame extends Phaser.Scene {
     // setting collisions between the player and the enemy
     this.physics.add.collider(this.player, this.enemyGroup, function (player, enemy) {
       if (!this.enemy.anims.isPlaying) {
-        this.enemy.anims.play('run')
+        this.enemy.anims.play('jog')
       }
       this.dying = true
       this.player.anims.stop()
@@ -335,7 +335,7 @@ class playGame extends Phaser.Scene {
           let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 46, 'enemy')
           enemy.setImmovable(true)
           enemy.setVelocityX(platform.body.velocity.x)
-          enemy.anims.play('run')
+          enemy.anims.play('jog')
           enemy.setDepth(2)
           enemy.enemyGroup.add(enemy)
         }
