@@ -236,7 +236,7 @@ class playGame extends Phaser.Scene {
     }, null, this)
 
     // setting collisions between the player and the enemy
-    this.physics.add.collider(this.player, this.enemyGroup, function (player, enemy) {
+    this.physics.add.overlap(this.player, this.enemyGroup, function (player, enemy) {
       this.dying = true
       this.player.anims.stop()
       this.player.setFrame(2)
