@@ -80,8 +80,8 @@ class preloadGame extends Phaser.Scene {
 
     // enemy is a sprite sheet made by 24x48 pixels
     this.load.spritesheet('enemy', 'assets/enemy.png', {
-      frameWidth: 30,
-      frameHeight: 60
+      frameWidth: 24,
+      frameHeight: 48
     })
 
     // the coin is a sprite sheet made by 20x20 pixels
