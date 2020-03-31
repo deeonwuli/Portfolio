@@ -325,8 +325,8 @@ class playGame extends Phaser.Scene {
       if (Phaser.Math.Between(1, 100) <= gameOptions.enemyPercent) {
         if (this.enemyPool.getLength()) {
           let enemy = this.enemyPool.getFirst()
-          enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(q, platformWidth)
-          enemy.y = posY
+          enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth)
+          enemy.y = posY + 46
           enemy.alpha = 1
           enemy.active = true
           enemy.visible = true
