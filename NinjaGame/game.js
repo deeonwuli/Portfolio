@@ -237,9 +237,6 @@ class playGame extends Phaser.Scene {
 
     // setting collisions between the player and the enemy
     this.physics.add.collider(this.player, this.enemyGroup, function (player, enemy) {
-      if (!this.enemy.anims.isPlaying) {
-        this.enemy.anims.play('jog')
-      }
       this.dying = true
       this.player.anims.stop()
       this.player.setFrame(2)
