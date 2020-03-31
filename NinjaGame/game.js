@@ -333,6 +333,7 @@ class playGame extends Phaser.Scene {
           let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 46, 'enemy')
           enemy.setImmovable(true)
           enemy.setVelocityX(platform.body.velocity.x)
+          enemy.setSize(8, 2, true)
           enemy.anims.play('jog')
           enemy.setDepth(2)
           this.enemyGroup.add(enemy)
