@@ -327,13 +327,13 @@ class playGame extends Phaser.Scene {
         if (this.enemyPool.getLength()) {
           let enemy = this.enemyPool.getFirst()
           enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth)
-          enemy.y = posY - 30
+          enemy.y = posY - 40
           enemy.alpha = 1
           enemy.active = true
           enemy.visible = true
           this.enemyPool.remove(enemy)
         } else {
-          let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 30, 'enemy')
+          let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 40, 'enemy')
           enemy.setImmovable(true)
           enemy.setVelocityX(platform.body.velocity.x)
           enemy.setSize(8, 2, true)
@@ -347,7 +347,7 @@ class playGame extends Phaser.Scene {
 
   // the player jumps when on the ground, or once in the air as long as there are jumps left and the first jump was on the ground
   jump () {
-    if ((!this.dying) &amp;&amp; (this.player.body.touching.down || (this.playerJumps > 0 &amp;&amp; this.playerJumps < gameOptions.jumps))) {
+    if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < gameOptions.jumps)) {
       if (this.player.body.touching.down) {
         this.playerJumps = 0
       }
