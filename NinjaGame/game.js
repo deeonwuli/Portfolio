@@ -1,3 +1,15 @@
+var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+if (!isMobile) {
+  widthRatio = 0.95
+  heightRatio = 0.65
+  var deg = 0
+  document.body.style.webkitTransform = 'rotate(' + deg + 'deg)'
+  document.body.style.mozTransform = 'rotate(' + deg + 'deg)'
+  document.body.style.msTransform = 'rotate(' + deg + 'deg)'
+  document.body.style.oTransform = 'rotate(' + deg + 'deg)'
+  document.body.style.transform = 'rotate(' + deg + 'deg)'
+}
+
 let game
 
 // global game options
