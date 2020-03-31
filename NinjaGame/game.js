@@ -211,6 +211,9 @@ class playGame extends Phaser.Scene {
     this.player.setGravityY(gameOptions.playerGravity)
     this.player.setDepth(2)
 
+    // the player is not dying
+    this.dying = false
+
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup, function () {
       // play "run" animation if the player is on a platform
