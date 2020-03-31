@@ -241,6 +241,7 @@ class playGame extends Phaser.Scene {
       this.player.anims.stop()
       this.player.setFrame(2)
       this.player.setVelocityY(-200)
+      this.physics.world.removeCollider(this.platformCollider)
     }, null, this)
 
     // checking for input
@@ -334,7 +335,7 @@ class playGame extends Phaser.Scene {
           enemy.setVelocityX(platform.body.velocity.x)
           enemy.anims.play('jog')
           enemy.setDepth(2)
-          enemy.enemyGroup.add(enemy)
+          this.enemyGroup.add(enemy)
         }
       }
     }
