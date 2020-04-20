@@ -494,8 +494,8 @@ class GameOver extends Phaser.Scene {
     })
 
     // Buttons
-    let lb = this.add.image(500, 350, 'leaderboard').setOrigin(0)
-    let ta = this.add.image(150, 350, 'tryAgain').setOrigin(0)
+    let lb = this.add.image(750, 500, 'leaderboard').setOrigin(0)
+    let ta = this.add.image(400, 500, 'tryAgain').setOrigin(0)
 
     lb.setInteractive({ useHandCursor: true })
     ta.setInteractive({ useHandCursor: true })
