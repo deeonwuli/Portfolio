@@ -530,9 +530,9 @@ function resize () {
   }
 }
 
-/* function isMobileDevice () {
+function isMobileDevice () {
   return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
-} */
+}
 
 /* function checkOrientation (orientation) {
   if (orientation === Phaser.Scale.PORTRAIT) {
