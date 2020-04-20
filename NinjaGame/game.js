@@ -1,24 +1,31 @@
 let game
+let score = 0
+let scoreText
+/* let oriText
+let mtn */
 
 // global game options
 let gameOptions = {
   // platform speed range, in pixels per second
   platformSpeedRange: [300, 300],
 
+  // enemy speed, in pixels per second
+  enemySpeed: 40,
+
   // mountain speed, in pixels per second
   mountainSpeed: 80,
 
   // spawn range, how far should be the rightmost platform from the right edge before next platform spawns, in pixels
-  spawnRange: [80, 300],
+  spawnRange: [80, 200],
 
   // platform width range, in pixels
-  platformSizeRange: [90, 300],
+  platformSizeRange: [150, 300],
 
   // a height range between rightmost platform and next platform to be spawned
   platformHeightRange: [-5, 5],
 
   // a scale to be multiplied by platformHeightRange
-  platformHeighScale: 20,
+  platformHeightScale: 20,
 
   // platform max and min height, as screen height ratio
   platformVerticalLimit: [0.4, 0.8],
@@ -48,7 +55,7 @@ window.onload = function () {
     type: Phaser.AUTO,
     width: 1334,
     height: 750,
-    scene: [preloadGame, playGame],
+    scene: [preloadGame, playGame, GameOver],
     backgroundColor: 0x87CEFA,
 
     // physics settings
@@ -69,6 +76,8 @@ class preloadGame extends Phaser.Scene {
   }
 
   preload () {
+    // this.load.image('background', 'assets/background.jpg')
+
     // platform is a tile sprite
     this.load.image('platform', 'assets/platform.png')
 
@@ -98,6 +107,14 @@ class preloadGame extends Phaser.Scene {
   }
 
   create () {
+    // load the pic
+    /* if (isMobileDevice() === true) {
+      mtn = this.add.image(0, 0, 'background').setOrigin(0)
+      oriText = this.add.text(320, 128, 'Please set your\nphone to landscape', { font: '48px Courier', fill: '#00ff00', align: 'center' }).setOrigin(0.5)
+      checkOrientation(this.scale.orientation)
+      this.scale.on('orientationchange', checkOrientation, this)
+    } */
+
     // setting player animation
     this.anims.create({
       key: 'run',
@@ -215,7 +232,7 @@ class playGame extends Phaser.Scene {
     this.dying = false
 
     // setting collisions between the player and the platform group
-    this.physics.add.collider(this.player, this.platformGroup, function () {
+    this.platformcollider = this.physics.add.collider(this.player, this.platformGroup, function () {
       // play "run" animation if the player is on a platform
       if (!this.player.anims.isPlaying) {
         this.player.anims.play('run')
@@ -232,8 +249,10 @@ class playGame extends Phaser.Scene {
         ease: 'Cubic.easeOut',
         callbackScope: this,
         onComplete: function () {
+          score += 10
           this.coinGroup.killAndHide(coin)
           this.coinGroup.remove(coin)
+          scoreText.setText('Score: ' + score)
         }
       })
     }, null, this)
@@ -243,12 +262,18 @@ class playGame extends Phaser.Scene {
       this.dying = true
       this.player.anims.stop()
       this.player.setFrame(2)
-      this.player.setVelocityY(-200)
+      this.player.body.setVelocityY(-200)
       this.physics.world.removeCollider(this.platformCollider)
     }, null, this)
 
     // checking for input
     this.input.on('pointerdown', this.jump, this)
+
+    scoreText = this.add.text(25, 25, 'Score: 0', {
+      font: 'bold 30px Tahoma',
+      fill: '#000000'
+    })
+    scoreText.setScrollFactor(0)
   }
 
   // adding mountains
@@ -307,13 +332,13 @@ class playGame extends Phaser.Scene {
         if (this.coinPool.getLength()) {
           let coin = this.coinPool.getFirst()
           coin.x = posX
-          coin.y = posY - 96
+          coin.y = posY - 75
           coin.alpha = 1
           coin.active = true
           coin.visible = true
           this.coinPool.remove(coin)
         } else {
-          let coin = this.physics.add.sprite(posX, posY - 96, 'coin')
+          let coin = this.physics.add.sprite(posX, posY - 75, 'coin')
           coin.setImmovable(true)
           coin.setVelocityX(platform.body.velocity.x)
           coin.anims.play('rotate')
@@ -326,6 +351,7 @@ class playGame extends Phaser.Scene {
       if (Phaser.Math.Between(1, 100) <= gameOptions.enemyPercent) {
         if (this.enemyPool.getLength()) {
           let enemy = this.enemyPool.getFirst()
+          // enemy.setVelocityX(gameOptions.enemySpeed * -0.5)
           enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth)
           enemy.y = posY - 40
           enemy.alpha = 1
@@ -334,9 +360,8 @@ class playGame extends Phaser.Scene {
           this.enemyPool.remove(enemy)
         } else {
           let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 40, 'enemy')
-          enemy.setImmovable(true)
           enemy.setVelocityX(platform.body.velocity.x)
-          enemy.setSize(8, 2, true)
+          enemy.setImmovable(true)
           enemy.anims.play('jog')
           enemy.setDepth(2)
           this.enemyGroup.add(enemy)
@@ -359,11 +384,20 @@ class playGame extends Phaser.Scene {
     }
   }
 
+  showGameOver () {
+    this.scene.start('GameOver', { score: this.score })
+  }
+
   update () {
     // game over
     if (this.player.y > game.config.height) {
-      alert('Game over')
-      this.scene.start('PlayGame')
+      this.time.addEvent({
+        delay: 1000,
+        callback: this.showGameOver,
+        callbackScope: this
+      })
+      // alert('Game over')
+      // this.scene.start('PlayGame')
     }
     this.player.x = gameOptions.playerStartPosition
 
@@ -414,13 +448,70 @@ class playGame extends Phaser.Scene {
     // adding new platforms
     if (minDistance > this.nextPlatformDistance) {
       let nextPlatformWidth = Phaser.Math.Between(gameOptions.platformSizeRange[0], gameOptions.platformSizeRange[1])
-      let platformRandomHeight = gameOptions.platformHeighScale * Phaser.Math.Between(gameOptions.platformHeightRange[0], gameOptions.platformHeightRange[1])
+      let platformRandomHeight = gameOptions.platformHeightScale * Phaser.Math.Between(gameOptions.platformHeightRange[0], gameOptions.platformHeightRange[1])
       let nextPlatformGap = rightmostPlatformHeight + platformRandomHeight
       let minPlatformHeight = game.config.height * gameOptions.platformVerticalLimit[0]
       let maxPlatformHeight = game.config.height * gameOptions.platformVerticalLimit[1]
       let nextPlatformHeight = Phaser.Math.Clamp(nextPlatformGap, minPlatformHeight, maxPlatformHeight)
       this.addPlatform(nextPlatformWidth, game.config.width + nextPlatformWidth / 2, nextPlatformHeight)
     }
+  }
+}
+
+class GameOver extends Phaser.Scene {
+  constructor () {
+    super({
+      key: 'GameOver',
+      active: false
+    })
+  }
+
+  init (data) {
+    this.score = data.score
+    this.config = this.sys.game.config
+  }
+
+  preload () {
+    this.load.image('background', 'assets/over.png')
+    this.load.image('leaderboard', 'assets/leaderboard.png')
+    this.load.image('tryAgain', 'assets/tryagain.png')
+  }
+
+  create () {
+    // background
+    let bg = this.add.image(150, 100, 'background').setOrigin(0)
+
+    // Title
+    let title = this.add.text(350, 200, 'Game Over!', {
+      font: 'bold 100px Tahoma',
+      fill: '#ffffff'
+    })
+
+    // score text
+    let txt_score = this.add.text(475, 300, '\nScore: ' + score, {
+      font: 'bold 70px Tahoma',
+      fill: '#ffffff'
+    })
+
+    // Buttons
+    let lb = this.add.image(500, 350, 'leaderboard').setOrigin(0)
+    let ta = this.add.image(150, 350, 'tryAgain').setOrigin(0)
+
+    lb.setInteractive({ useHandCursor: true })
+    ta.setInteractive({ useHandCursor: true })
+
+    lb.on('pointerdown', () => this.clickLeaderboard())
+    ta.on('pointerdown', () => this.clickTryAgain())
+  }
+
+  clickLeaderboard () {
+    this.scene.switch('PlayGame')
+    score = 0
+  }
+
+  clickTryAgain () {
+    this.scene.switch('PlayGame')
+    score = 0
   }
 }
 
@@ -438,3 +529,18 @@ function resize () {
     canvas.style.height = windowHeight + 'px'
   }
 }
+
+/* function isMobileDevice () {
+  return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
+} */
+
+/* function checkOrientation (orientation) {
+  if (orientation === Phaser.Scale.PORTRAIT) {
+    mtn.alpha = 1
+    oriText.setVisible(true)
+  } else if (orientation === Phaser.Scale.LANDSCAPE) {
+    mtn.alpha = 0
+    oriText.setVisible(false)
+    this.scene.start.playGame()
+  }
+} */
