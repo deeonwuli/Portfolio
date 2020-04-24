@@ -578,8 +578,6 @@ fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
   console.warn('Something went wrong.', err)
 })
 
-let allscores
-
 function isMobileDevice () {
   return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
 }
