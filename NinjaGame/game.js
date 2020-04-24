@@ -236,6 +236,9 @@ class playGame extends Phaser.Scene {
       // play "run" animation if the player is on a platform
       if (!this.player.anims.isPlaying) {
         this.player.anims.play('run')
+      } else {
+        score += 0.05
+        scoreText.setText('Score: ' + Math.round(score))
       }
     }, null, this)
 
@@ -252,7 +255,7 @@ class playGame extends Phaser.Scene {
           score += 10
           this.coinGroup.killAndHide(coin)
           this.coinGroup.remove(coin)
-          scoreText.setText('Score: ' + score)
+          scoreText.setText('Score: ' + Math.round(score))
         }
       })
     }, null, this)
@@ -396,8 +399,6 @@ class playGame extends Phaser.Scene {
         callback: this.showGameOver,
         callbackScope: this
       })
-      // alert('Game over')
-      // this.scene.start('PlayGame')
     }
     this.player.x = gameOptions.playerStartPosition
 
@@ -475,6 +476,7 @@ class GameOver extends Phaser.Scene {
     this.load.image('background', 'assets/over.png')
     this.load.image('leaderboard', 'assets/leaderboard.png')
     this.load.image('tryAgain', 'assets/tryagain.png')
+    this.load.bitmapFont('arcade', 'assets/ARCADECLASSIC.TTF')
   }
 
   create () {
@@ -488,7 +490,7 @@ class GameOver extends Phaser.Scene {
     })
 
     // score text
-    let txt_score = this.add.text(475, 300, '\nScore: ' + score, {
+    let txt_score = this.add.text(475, 300, '\nScore: ' + Math.round(score), {
       font: 'bold 70px Tahoma',
       fill: '#ffffff'
     })
@@ -529,6 +531,28 @@ function resize () {
     canvas.style.height = windowHeight + 'px'
   }
 }
+
+fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-apikey': '5e9e2bed436377171a0c267d'
+  }
+}).then(function (response) {
+  // The API call was successful!
+  if (response.ok) {
+    return response.json()
+  } else {
+    return Promise.reject(response)
+  }
+}).then(function (data) {
+  // This is the JSON from our response
+  console.log('I was here')
+  console.log(data)
+}).catch(function (err) {
+  // There was an error
+  console.warn('Something really went wrong.', err)
+})
 
 function isMobileDevice () {
   return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
