@@ -476,7 +476,6 @@ class GameOver extends Phaser.Scene {
     this.load.image('background', 'assets/over.png')
     this.load.image('leaderboard', 'assets/leaderboard.png')
     this.load.image('tryAgain', 'assets/tryagain.png')
-    this.load.bitmapFont('arcade', 'assets/ARCADECLASSIC.TTF')
   }
 
   create () {
@@ -553,6 +552,33 @@ fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
   // There was an error
   console.warn('Something really went wrong.', err)
 })
+
+let data = { name: 'Dumebi', score: 100 }
+fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
+  method: 'POST',
+  body: JSON.stringify(data),
+  headers: {
+    'Content-Type': 'application/json',
+    'x-apikey': '5e9e2bed436377171a0c267d'
+  },
+  referrer: 'no-referrer'
+}).then(function (response) {
+  // The API call was successful!
+  if (response.ok) {
+    return response.json()
+  } else {
+    return Promise.reject(response)
+  }
+}).then(function (data) {
+  // This is the JSON from our response
+  console.log('Dumebi is cool')
+  console.log(data)
+}).catch(function (err) {
+  // There was an error
+  console.warn('Something went wrong.', err)
+})
+
+let allscores
 
 function isMobileDevice () {
   return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
