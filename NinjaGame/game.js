@@ -163,6 +163,7 @@ class playGame extends Phaser.Scene {
 
   preload () {
     this.load.image('score', 'assets/score.png')
+    this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
   }
 
   create () {
@@ -283,10 +284,8 @@ class playGame extends Phaser.Scene {
     this.input.on('pointerdown', this.jump, this)
 
     let txt = this.add.image(25, 25, 'score').setOrigin(0, 0)
-    scoreText = this.add.text(220, 8, ' 0', {
-      font: 'bold 50px Arial',
-      fill: '#fff'
-    })
+    scoreText = this.add.bitmapText(220, 15, 'arcade', Math.round(score)).setTint(0xffffff)
+    scoreText.setScale(1.3)
     scoreText.setScrollFactor(0)
   }
 
@@ -489,6 +488,7 @@ class GameOver extends Phaser.Scene {
     this.load.image('background', 'assets/over.png')
     this.load.image('leaderboard', 'assets/leaderboard.png')
     this.load.image('tryAgain', 'assets/tryagain.png')
+    this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
   }
 
   create () {
@@ -500,14 +500,12 @@ class GameOver extends Phaser.Scene {
     title.setScale(2.5)
 
     // score text
-    let txt_score = this.add.image(430, 350, 'score').setOrigin(0, 0)
+    let txt_score = this.add.image(350, 350, 'score').setOrigin(0, 0)
     txt_score.setScale(2)
 
     // score
-    let scores = this.add.text(800, 335, Math.round(score), {
-      font: 'bold 70px Arial',
-      fill: '#ffffff'
-    })
+    let scores = this.add.bitmapText(730, 345, 'arcade', Math.round(score)).setTint(0xffffff)
+    scores.setScale(2)
 
     // Buttons
     let lb = this.add.image(650, 500, 'leaderboard').setOrigin(0)
@@ -831,7 +829,7 @@ class Highscore extends Phaser.Scene {
 
   create () {
     this.add.bitmapText(350, 350, 'arcade', 'RANK  SCORE   NAME').setTint(0xff00ff)
-    this.add.bitmapText(350, 400, 'arcade', '1ST   50000').setTint(0xff0000)
+    this.add.bitmapText(350, 400, 'arcade', '1ST   ' + Math.round(score)).setTint(0xff0000)
 
     this.playerText = this.add.bitmapText(830, 400, 'arcade', '').setTint(0xff0000)
 
