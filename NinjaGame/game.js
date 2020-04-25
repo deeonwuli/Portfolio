@@ -1,13 +1,14 @@
 let game
 let score = 0
 let scoreText
+let name
 /* let oriText
 let mtn */
 
 // global game options
 let gameOptions = {
   // platform speed range, in pixels per second
-  platformSpeedRange: [300, 300],
+  platformSpeedRange: [400, 400],
 
   // enemy speed, in pixels per second
   enemySpeed: 40,
@@ -19,7 +20,7 @@ let gameOptions = {
   spawnRange: [80, 200],
 
   // platform width range, in pixels
-  platformSizeRange: [150, 300],
+  platformSizeRange: [250, 500],
 
   // a height range between rightmost platform and next platform to be spawned
   platformHeightRange: [-5, 5],
@@ -567,7 +568,7 @@ fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
   console.warn('Something really went wrong.', err)
 })
 
-let data = { name: 'Dumebi', score: 100 }
+let data = { name: name, score: Math.round(score) }
 fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
   method: 'POST',
   body: JSON.stringify(data),
