@@ -84,16 +84,16 @@ class preloadGame extends Phaser.Scene {
     // platform is a tile sprite
     this.load.image('platform', 'assets/platform.png')
 
-    // player is a sprite sheet made by 24x48 pixels
+    // player is a sprite sheet made by 50x69 pixels
     this.load.spritesheet('player', 'assets/player.png', {
       frameWidth: 50,
       frameHeight: 60
     })
 
-    // enemy is a sprite sheet made by 24x48 pixels
+    // enemy is a sprite sheet made by 49.5x48 pixels
     this.load.spritesheet('enemy', 'assets/enemy.png', {
-      frameWidth: 24,
-      frameHeight: 48
+      frameWidth: 49.5,
+      frameHeight: 59
     })
 
     // the coin is a sprite sheet made by 20x20 pixels
@@ -159,7 +159,6 @@ class preloadGame extends Phaser.Scene {
 class titleScreen extends Phaser.Scene {
   constructor () {
     super('TitleScreen')
-    this.playerName
   }
 
   preload () {
@@ -288,12 +287,12 @@ class playGame extends Phaser.Scene {
     this.dying = false
 
     // setting collisions between the player and the platform group
-    this.platformcollider = this.physics.add.collider(this.player, this.platformGroup, function () {
+    this.platformCollider = this.physics.add.collider(this.player, this.platformGroup, function () {
       // play "run" animation if the player is on a platform
       if (!this.player.anims.isPlaying) {
         this.player.anims.play('run')
       } else {
-        score += 0.05
+        score += 0.03
         scoreText.setText(Math.round(score))
       }
     }, null, this)
@@ -308,7 +307,7 @@ class playGame extends Phaser.Scene {
         ease: 'Cubic.easeOut',
         callbackScope: this,
         onComplete: function () {
-          score += 10
+          score += 5
           this.coinGroup.killAndHide(coin)
           this.coinGroup.remove(coin)
           scoreText.setText(Math.round(score))
@@ -411,13 +410,13 @@ class playGame extends Phaser.Scene {
           let enemy = this.enemyPool.getFirst()
           // enemy.setVelocityX(gameOptions.enemySpeed * -0.5)
           enemy.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth)
-          enemy.y = posY - 40
+          enemy.y = posY - 50
           enemy.alpha = 1
           enemy.active = true
           enemy.visible = true
           this.enemyPool.remove(enemy)
         } else {
-          let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 40, 'enemy')
+          let enemy = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 50, 'enemy')
           enemy.setVelocityX(platform.body.velocity.x)
           enemy.setImmovable(true)
           enemy.anims.play('jog')
