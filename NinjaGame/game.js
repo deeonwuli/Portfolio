@@ -56,10 +56,11 @@ window.onload = function () {
     type: Phaser.AUTO,
     width: 1334,
     height: 750,
-    scene: [preloadGame, playGame, GameOver, Starfield, Highscore, InputPanel],
-    backgroundColor: 0x000000,
+    scene: [preloadGame, titleScreen, playGame, GameOver, Starfield, Highscore, InputPanel],
     pixelArt: true,
-
+    dom: {
+      createContainer: true
+    },
     // physics settings
     physics: {
       default: 'arcade'
@@ -151,7 +152,51 @@ class preloadGame extends Phaser.Scene {
       repeat: -1
     })
 
-    this.scene.start('PlayGame')
+    this.scene.start('TitleScreen')
+  }
+}
+
+class titleScreen extends Phaser.Scene {
+  constructor () {
+    super('TitleScreen')
+    this.playerName
+  }
+
+  preload () {
+    this.load.image('background', 'assets/titleback.png')
+    this.load.image('title', 'assets/penguinja.png')
+    this.load.image('start', 'assets/start.png')
+    this.load.image('leaderboard', 'assets/leaderboard.png')
+    this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
+  }
+
+  create () {
+    let back = this.add.image(180, 100, 'background').setOrigin(0, 0)
+    let ttl = this.add.image(380, 240, 'title').setOrigin(0, 0)
+    ttl.setScale(2)
+
+    let enter = this.add.bitmapText(500, 350, 'arcade', 'Enter your name: ').setTint(0xffffff)
+    enter.setScale(0.7)
+
+    // Buttons
+    let lb = this.add.image(750, 550, 'leaderboard').setOrigin(0)
+    let st = this.add.image(300, 550, 'start').setOrigin(0)
+
+    lb.setInteractive({ useHandCursor: true })
+    st.setInteractive({ useHandCursor: true })
+
+    lb.on('pointerdown', () => this.clickLeaderboard())
+    st.on('pointerdown', () => this.clickStart())
+  }
+
+  clickLeaderboard () {
+    this.scene.start('Highscore')
+    this.scene.launch('Starfield')
+  }
+
+  clickStart () {
+    this.scene.switch('PlayGame')
+    score = 0
   }
 }
 
@@ -834,7 +879,7 @@ class Highscore extends Phaser.Scene {
     this.playerText = this.add.bitmapText(830, 400, 'arcade', '').setTint(0xff0000)
 
     //  Do this, otherwise this Scene will steal all keyboard input
-    this.input.keyboard.enabled = false
+    this.input.keyboard.enabled = true
 
     this.scene.launch('InputPanel')
 
