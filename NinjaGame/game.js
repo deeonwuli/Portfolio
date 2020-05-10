@@ -378,6 +378,7 @@ class playGame extends Phaser.Scene {
 
     // checking for input
     this.input.on('pointerdown', this.jump, this)
+    this.input.keyboard.on('keyup_SPACE', this.jump, this)
 
     let txt = this.add.image(25, 25, 'score').setOrigin(0, 0)
     scoreText = this.add.bitmapText(220, 15, 'arcade', Math.round(score)).setTint(0xffffff)
@@ -691,7 +692,6 @@ function isMobileDevice () {
   return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
 }
 
-// Leaderboard display
 class InputPanel extends Phaser.Scene {
   constructor () {
     super({
