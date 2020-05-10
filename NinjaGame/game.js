@@ -56,7 +56,7 @@ window.onload = function () {
     type: Phaser.AUTO,
     width: 1334,
     height: 750,
-    scene: [preloadGame, titleScreen, playGame, GameOver, Starfield, Highscore, InputPanel],
+    scene: [preloadGame, titleScreen, nameScreen, playGame, GameOver, Starfield, Highscore, InputPanel],
     pixelArt: true,
     dom: {
       createContainer: true
@@ -156,6 +156,7 @@ class preloadGame extends Phaser.Scene {
   }
 }
 
+// title screen
 class titleScreen extends Phaser.Scene {
   constructor () {
     super('TitleScreen')
@@ -171,11 +172,8 @@ class titleScreen extends Phaser.Scene {
 
   create () {
     let back = this.add.image(180, 100, 'background').setOrigin(0, 0)
-    let ttl = this.add.image(380, 240, 'title').setOrigin(0, 0)
-    ttl.setScale(2)
-
-    let enter = this.add.bitmapText(500, 350, 'arcade', 'Enter your name: ').setTint(0xffffff)
-    enter.setScale(0.7)
+    let ttl = this.add.image(260, 240, 'title').setOrigin(0, 0)
+    ttl.setScale(3)
 
     // Buttons
     let lb = this.add.image(750, 550, 'leaderboard').setOrigin(0)
@@ -194,8 +192,62 @@ class titleScreen extends Phaser.Scene {
   }
 
   clickStart () {
-    this.scene.switch('PlayGame')
+    this.scene.switch('NameScreen')
     score = 0
+  }
+}
+
+// name screen for database
+class nameScreen extends Phaser.Scene {
+  constructor () {
+    super('NameScreen')
+    this.name
+  }
+
+  preload () {
+    this.load.image('background', 'assets/titleback.png')
+    this.load.image('block', 'assets/block.png')
+    this.load.image('rub', 'assets/rub.png')
+    this.load.image('end', 'assets/end.png')
+    this.load.image('letgo', 'assets/letgo.png')
+    this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
+  }
+
+  create () {
+    let back = this.add.image(180, 100, 'background').setOrigin(0, 0)
+    let enter = this.add.bitmapText(300, 200, 'arcade', 'Enter your name: ').setTint(0xffffff)
+    enter.setScale(1.5)
+
+    let sub = this.add.bitmapText(500, 260, 'arcade', '(in 3 characters) ').setTint(0xffffff)
+    sub.setScale(0.7)
+
+    let go = this.add.image(820, 600, 'letgo').setOrigin(0)
+    go.setInteractive({ useHandCursor: true })
+    go.on('pointerdown', () => this.clickGo())
+
+    this.playerText = this.add.bitmapText(570, 300, 'arcade', '').setTint(0xffffff)
+    this.playerText.setScale(2)
+    this.input.keyboard.enabled = true
+
+    this.scene.launch('InputPanel')
+
+    let panel = this.scene.get('InputPanel')
+
+    //  Listen to events from the Input Panel scene
+    panel.events.on('updateName', this.updateName, this)
+    panel.events.on('submitName', this.submitName, this)
+  }
+
+  submitName () {
+    this.scene.stop('InputPanel')
+  }
+
+  updateName (name) {
+    this.playerText.setText(name)
+  }
+
+  clickGo () {
+    this.scene.start('PlayGame')
   }
 }
 
@@ -661,7 +713,7 @@ class InputPanel extends Phaser.Scene {
   }
 
   create () {
-    let text = this.add.bitmapText(350, 150, 'arcade', 'ABCDEFGHIJ\n\nKLMNOPQRST\n\nUVWXYZ.-')
+    let text = this.add.bitmapText(400, 400, 'arcade', 'ABCDEFGHIJ\n\nKLMNOPQRST\n\nUVWXYZ.-')
 
     text.setLetterSpacing(20)
     text.setInteractive()
