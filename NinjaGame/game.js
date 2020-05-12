@@ -1,7 +1,7 @@
 let game
 let score = 0
 let scoreText
-let name
+let name = ''
 /* let oriText
 let mtn */
 
@@ -56,11 +56,8 @@ window.onload = function () {
     type: Phaser.AUTO,
     width: 1334,
     height: 750,
-    scene: [preloadGame, titleScreen, nameScreen, playGame, GameOver, Starfield, Highscore, InputPanel],
+    scene: [preloadGame, titleScreen, nameScreen, storyScreen, playGame, GameOver, Starfield, Highscore, InputPanel],
     pixelArt: true,
-    dom: {
-      createContainer: true
-    },
     // physics settings
     physics: {
       default: 'arcade'
@@ -201,7 +198,6 @@ class titleScreen extends Phaser.Scene {
 class nameScreen extends Phaser.Scene {
   constructor () {
     super('NameScreen')
-    this.name
   }
 
   preload () {
@@ -209,7 +205,6 @@ class nameScreen extends Phaser.Scene {
     this.load.image('block', 'assets/block.png')
     this.load.image('rub', 'assets/rub.png')
     this.load.image('end', 'assets/end.png')
-    this.load.image('letgo', 'assets/letgo.png')
     this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
   }
 
@@ -221,16 +216,13 @@ class nameScreen extends Phaser.Scene {
     let sub = this.add.bitmapText(500, 260, 'arcade', '(in 3 characters) ').setTint(0xffffff)
     sub.setScale(0.7)
 
-    let go = this.add.image(820, 600, 'letgo').setOrigin(0)
-    go.setInteractive({ useHandCursor: true })
-    go.on('pointerdown', () => this.clickGo())
-
     this.playerText = this.add.bitmapText(570, 300, 'arcade', '').setTint(0xffffff)
     this.playerText.setScale(2)
+    this.name = this.playerText
+
     this.input.keyboard.enabled = true
 
     this.scene.launch('InputPanel')
-
     let panel = this.scene.get('InputPanel')
 
     //  Listen to events from the Input Panel scene
@@ -239,15 +231,58 @@ class nameScreen extends Phaser.Scene {
   }
 
   submitName () {
+    this.scene.switch('StoryScreen')
     this.scene.stop('InputPanel')
   }
 
   updateName (name) {
     this.playerText.setText(name)
   }
+}
 
-  clickGo () {
-    this.scene.start('PlayGame')
+// story screen
+class storyScreen extends Phaser.Scene {
+  constructor () {
+    super('StoryScreen')
+    this.name
+  }
+
+  preload () {
+    this.load.image('back', 'assets/background.jpg')
+    this.load.image('skip', 'assets/skipnstart.png')
+    this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
+  }
+
+  create () {
+    let back = this.add.image(180, 100, 'background').setOrigin(0, 0)
+    this.loop()
+    console.log(name)
+
+    let skip = this.add.image(760, 630, 'skip').setOrigin(0)
+    skip.setInteractive({ useHandCursor: true })
+    skip.on('pointerdown', () => this.clickSkip())
+  }
+
+  clickSkip () {
+    this.scene.switch('PlayGame')
+  }
+
+  loop () {
+    let storyText = this.add.text(700, 400, '', { font: '40px Courier', fill: '#ffffff', align: 'center' }).setOrigin(0.5)
+    let story = 'Welcome ' + name + ',\n to the world of Penguinja. \n After many years of training, \na penguin, Penguinja, \nis attempting to get away from \nthe Ninja Academy. \nHe faces adversaries in his \nformer comrades and \nmust collect rewards \nin his bid to get away. \n Just tap to help him escape.'
+    let writtenString = ''
+    let i = 0
+    this.time.addEvent({
+      delay: 100,
+      callback: () => {
+        if (i < story.length) {
+          writtenString += story.charAt(i)
+          storyText.setText(writtenString)
+          i++
+        }
+      },
+      loop: true
+    })
   }
 }
 
@@ -368,7 +403,7 @@ class playGame extends Phaser.Scene {
     }, null, this)
 
     // setting collisions between the player and the enemy
-    this.physics.add.overlap(this.player, this.enemyGroup, function (player, enemy) {
+    this.physics.add.collider(this.player, this.enemyGroup, function (player, enemy) {
       this.dying = true
       this.player.anims.stop()
       this.player.setFrame(2)
@@ -954,14 +989,3 @@ class Highscore extends Phaser.Scene {
     this.playerText.setText(name)
   }
 }
-
-/* function checkOrientation (orientation) {
-  if (orientation === Phaser.Scale.PORTRAIT) {
-    mtn.alpha = 1
-    oriText.setVisible(true)
-  } else if (orientation === Phaser.Scale.LANDSCAPE) {
-    mtn.alpha = 0
-    oriText.setVisible(false)
-    this.scene.start.playGame()
-  }
-} */
