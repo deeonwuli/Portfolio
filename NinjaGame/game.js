@@ -181,7 +181,7 @@ class titleScreen extends Phaser.Scene {
 
     lb.on('pointerdown', () => this.clickLeaderboard())
     st.on('pointerdown', () => this.clickStart())
-
+    console.log(isMobileDevice())
     if (isMobileDevice === true) {
       this.add.image(100, 100, 'background').setOrigin(0, 0)
     }
