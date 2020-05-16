@@ -2,8 +2,6 @@ let game
 let score = 0
 let scoreText
 let name = ''
-/* let oriText
-let mtn */
 
 // global game options
 let gameOptions = {
@@ -107,14 +105,6 @@ class preloadGame extends Phaser.Scene {
   }
 
   create () {
-    // load the pic
-    /* if (isMobileDevice() === true) {
-      mtn = this.add.image(0, 0, 'background').setOrigin(0)
-      oriText = this.add.text(320, 128, 'Please set your\nphone to landscape', { font: '48px Courier', fill: '#00ff00', align: 'center' }).setOrigin(0.5)
-      checkOrientation(this.scale.orientation)
-      this.scale.on('orientationchange', checkOrientation, this)
-    } */
-
     // setting player animation
     this.anims.create({
       key: 'run',
@@ -995,5 +985,3 @@ class Highscore extends Phaser.Scene {
     this.playerText.setText(name)
   }
 }
-
-console.log(isMobileDevice())
