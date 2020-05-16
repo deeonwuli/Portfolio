@@ -181,6 +181,10 @@ class titleScreen extends Phaser.Scene {
 
     lb.on('pointerdown', () => this.clickLeaderboard())
     st.on('pointerdown', () => this.clickStart())
+
+    if (isMobileDevice === true) {
+      this.add.image(100, 100, 'background').setOrigin(0, 0)
+    }
   }
 
   clickLeaderboard () {
@@ -989,3 +993,5 @@ class Highscore extends Phaser.Scene {
     this.playerText.setText(name)
   }
 }
+
+console.log(isMobileDevice())
