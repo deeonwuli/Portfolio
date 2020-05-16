@@ -172,7 +172,7 @@ class titleScreen extends Phaser.Scene {
     lb.on('pointerdown', () => this.clickLeaderboard())
     st.on('pointerdown', () => this.clickStart())
 
-    if (isMobileDevice() === true) {
+    if (checkLandscape() === false && isMobileDevice() === true) {
       let overlay = this.add.image(180, 100, 'background').setOrigin(0, 0)
       let text = this.add.bitmapText(260, 280, 'arcade', 'Please switch \nyour mobile device \nto Landscape and \nreload the game.').setTint(0xffffff)
       text.setScale(1.5)
@@ -721,6 +721,14 @@ fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
 
 function isMobileDevice () {
   return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
+}
+
+function checkLandscape () {
+  if (window.innerWidth > window.innerHeight) {
+    return true
+  } else {
+    return false
+  }
 }
 
 class InputPanel extends Phaser.Scene {
