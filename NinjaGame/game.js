@@ -176,6 +176,7 @@ class titleScreen extends Phaser.Scene {
     let lb = this.add.image(750, 550, 'leaderboard').setOrigin(0)
     let st = this.add.image(300, 550, 'start').setOrigin(0)
 
+    let overlay = this.add.image(100, 100, 'background').setOrigin(0, 0)
     lb.setInteractive({ useHandCursor: true })
     st.setInteractive({ useHandCursor: true })
 
@@ -183,7 +184,8 @@ class titleScreen extends Phaser.Scene {
     st.on('pointerdown', () => this.clickStart())
     console.log(isMobileDevice())
     if (isMobileDevice === true) {
-      this.add.image(100, 100, 'background').setOrigin(0, 0)
+      let overlay = this.add.image(100, 100, 'background').setOrigin(0, 0)
+      console.log(overlay.indexOf)
     }
   }
 
@@ -277,7 +279,7 @@ class storyScreen extends Phaser.Scene {
     let writtenString = ''
     let i = 0
     this.time.addEvent({
-      delay: 100,
+      delay: 60,
       callback: () => {
         if (i < story.length) {
           writtenString += story.charAt(i)
