@@ -265,7 +265,7 @@ class storyScreen extends Phaser.Scene {
 
   loop () {
     let storyText = this.add.text(700, 400, '', { font: '40px Courier', fill: '#ffffff', align: 'center' }).setOrigin(0.5)
-    let story = 'Welcome ' + name + ',\n to the world of Penguinja. \n After many years of training, \na penguin, Penguinja, \nis attempting to get away from \nthe Ninja Academy. \nHe faces adversaries in his \nformer comrades and \nmust collect rewards \nin his bid to get away. \n Just tap to help him escape.'
+    let story = 'Welcome ' + name + ',\n to the world of Penguinja. \n After many years of training, \na penguin, Penguinja, \nis attempting to get away from \nthe Ninja Academy. \nHe faces adversaries, \nhis former comrades, and \nmust collect rewards \nin his bid to get away. \n Just tap to help him escape.'
     let writtenString = ''
     let i = 0
     this.time.addEvent({
