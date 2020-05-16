@@ -176,16 +176,16 @@ class titleScreen extends Phaser.Scene {
     let lb = this.add.image(750, 550, 'leaderboard').setOrigin(0)
     let st = this.add.image(300, 550, 'start').setOrigin(0)
 
-    let overlay = this.add.image(100, 100, 'background').setOrigin(0, 0)
     lb.setInteractive({ useHandCursor: true })
     st.setInteractive({ useHandCursor: true })
 
     lb.on('pointerdown', () => this.clickLeaderboard())
     st.on('pointerdown', () => this.clickStart())
-    console.log(isMobileDevice())
-    if (isMobileDevice === true) {
-      let overlay = this.add.image(100, 100, 'background').setOrigin(0, 0)
-      console.log(overlay.indexOf)
+
+    if (isMobileDevice() === true) {
+      let overlay = this.add.image(180, 100, 'background').setOrigin(0, 0)
+      let text = this.add.bitmapText(260, 280, 'arcade', 'Please switch \nyour mobile device \nto Landscape and \nreload the game.').setTint(0xffffff)
+      text.setScale(1.5)
     }
   }
 
