@@ -381,7 +381,8 @@ class playGame extends Phaser.Scene {
     }, null, this)
 
     // setting collisions between the player and the coin group
-    this.physics.add.overlap(this.player, this.coinGroup, function (player, coin) {
+    this.physics.add.collider(this.player, this.coinGroup, function (player, coin) {
+      this.physics.world.removeCollider(this.coin)
       this.tweens.add({
         targets: coin,
         y: coin.y - 100,
@@ -391,6 +392,7 @@ class playGame extends Phaser.Scene {
         callbackScope: this,
         onComplete: function () {
           score += 5
+          console.log('hi')
           this.coinGroup.killAndHide(coin)
           this.coinGroup.remove(coin)
           scoreText.setText(Math.round(score))
