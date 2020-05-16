@@ -382,7 +382,7 @@ class playGame extends Phaser.Scene {
 
     // setting collisions between the player and the coin group
     this.physics.add.collider(this.player, this.coinGroup, function (player, coin) {
-      this.physics.world.removeCollider(this.coin)
+      this.physics.world.removeCollider(coin)
       this.tweens.add({
         targets: coin,
         y: coin.y - 100,
