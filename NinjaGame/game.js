@@ -2,8 +2,9 @@ let game
 let score = 0
 let scoreText
 let name = ''
+console.log(put(getCookie('username'), getCookie('score')))
 
-document.cookie = 'username='
+// document.cookie = 'username='
 
 // global game options
 let gameOptions = {
@@ -269,7 +270,6 @@ class storyScreen extends Phaser.Scene {
 
   clickSkip () {
     this.scene.switch('PlayGame')
-    console.log(getCookie(name))
   }
 
   loop () {
@@ -541,6 +541,7 @@ class playGame extends Phaser.Scene {
   showGameOver () {
     if (score > getCookie('score')) {
       document.cookie = `score=${Math.round(score)}`
+      put(getCookie('username'), getCookie('score'))
     }
     this.scene.start('GameOver', { score: this.score })
   }
@@ -1006,13 +1007,11 @@ function get () {
   })
 }
 
-let response
-
 function post (name, score) {
-  let dater = { name: name, score: score }
+  let data = { name: name, score: score }
   fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
     method: 'POST',
-    body: JSON.stringify(dater),
+    body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
       'x-apikey': '5e9e2bed436377171a0c267d'
@@ -1026,14 +1025,38 @@ function post (name, score) {
       return Promise.reject(response)
     }
   }).then(function (data) {
-    // response = JSON.parse(data)
-    // document.cookie = `id=${response.id}`
-    console.log(document.cookie)
+    document.cookie = `id=${data._id}`
     // This is the JSON from our response
     console.log('Dumebi is cool')
     console.log(data)
   }).catch(function (err) {
     // There was an error
     console.warn('Something went wrong.', err)
+  })
+}
+
+function put (name, score) {
+  let data = { name: name, score: score }
+  fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score/' + getCookie('id'), {
+    method: 'PUT',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'dapplication/json',
+      'x-apikey': '5e9e2bed436377171a0c267d'
+    }
+  }).then(function (response) {
+  // The API call was successful!
+    if (response.ok) {
+      return response.json()
+    } else {
+      return Promise.reject(response)
+    }
+  }).then(function (data) {
+  // This is the JSON from our response
+    console.log('I was here')
+    console.log(data)
+  }).catch(function (err) {
+  // There was an error
+    console.warn('Something really went wrong.', err)
   })
 }
