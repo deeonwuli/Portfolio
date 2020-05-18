@@ -1041,7 +1041,7 @@ function put (name, score) {
     method: 'PUT',
     body: JSON.stringify(data),
     headers: {
-      'Content-Type': 'dapplication/json',
+      'Content-Type': 'application/json',
       'x-apikey': '5e9e2bed436377171a0c267d'
     }
   }).then(function (response) {
