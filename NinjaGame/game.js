@@ -2,8 +2,6 @@ let game
 let score = 0
 let scoreText
 let name = ''
-console.log(getCookie('username'))
-console.log(getCookie('score'))
 
 // global game options
 let gameOptions = {
