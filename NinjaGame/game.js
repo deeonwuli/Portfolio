@@ -534,7 +534,9 @@ class playGame extends Phaser.Scene {
   }
 
   showGameOver () {
-    document.cookie = `score=${Math.round(score)}`
+    if (score > getCookie('score')) {
+      document.cookie = `score=${Math.round(score)}`
+    }
     this.scene.start('GameOver', { score: this.score })
   }
 
