@@ -298,6 +298,7 @@ class playGame extends Phaser.Scene {
 
   preload () {
     this.load.image('score', 'assets/score.png')
+    this.load.image('high', 'assets/highscore.png')
     this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
   }
 
@@ -423,6 +424,9 @@ class playGame extends Phaser.Scene {
     scoreText = this.add.bitmapText(220, 15, 'arcade', Math.round(score)).setTint(0xffffff)
     scoreText.setScale(1.3)
     scoreText.setScrollFactor(0)
+    let highScore = this.add.image(830, 25, 'high').setOrigin(0, 0)
+    let highText = this.add.bitmapText(1180, 15, 'arcade', getCookie('score'))
+    highText.setScale(1.3)
   }
 
   // adding mountains
