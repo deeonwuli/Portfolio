@@ -2,6 +2,8 @@ let game
 let score = 0
 let scoreText
 let name = ''
+console.log(getCookie('username'))
+console.log(getCookie('score'))
 
 // global game options
 let gameOptions = {
@@ -185,8 +187,13 @@ class titleScreen extends Phaser.Scene {
   }
 
   clickStart () {
-    this.scene.switch('NameScreen')
-    score = 0
+    if (getCookie('username') === '') {
+      this.scene.switch('NameScreen')
+      score = 0
+    } else {
+      this.scene.switch('StoryScreen')
+      score = 0
+    }
   }
 }
 
@@ -214,7 +221,6 @@ class nameScreen extends Phaser.Scene {
 
     this.playerText = this.add.bitmapText(570, 300, 'arcade', '').setTint(0xffffff)
     this.playerText.setScale(2)
-    this.name = this.playerText
 
     this.input.keyboard.enabled = true
 
@@ -229,6 +235,8 @@ class nameScreen extends Phaser.Scene {
   submitName () {
     this.scene.switch('StoryScreen')
     this.scene.stop('InputPanel')
+    name = this.playerText.text
+    document.cookie = `username=${name}`
   }
 
   updateName (name) {
@@ -252,7 +260,6 @@ class storyScreen extends Phaser.Scene {
   create () {
     let back = this.add.image(180, 100, 'background').setOrigin(0, 0)
     this.loop()
-    console.log(name)
 
     let skip = this.add.image(760, 630, 'skip').setOrigin(0)
     skip.setInteractive({ useHandCursor: true })
@@ -261,15 +268,16 @@ class storyScreen extends Phaser.Scene {
 
   clickSkip () {
     this.scene.switch('PlayGame')
+    console.log(getCookie(name))
   }
 
   loop () {
     let storyText = this.add.text(700, 400, '', { font: '40px Courier', fill: '#ffffff', align: 'center' }).setOrigin(0.5)
-    let story = 'Welcome ' + name + ',\n to the world of Penguinja. \n After many years of training, \na penguin, Penguinja, \nis attempting to get away from \nthe Ninja Academy. \nHe faces adversaries, \nhis former comrades, and \nmust collect rewards \nin his bid to get away. \n Just tap to help him escape.'
+    let story = 'Welcome ' + getCookie('username') + ',\n to the world of Penguinja. \n After many years of training, \na penguin, Penguinja, \nis attempting to get away from \nthe Ninja Academy. \nHe faces adversaries, \nhis former comrades, and \nmust collect rewards \nin his bid to get away. \n Just tap to help him escape.'
     let writtenString = ''
     let i = 0
     this.time.addEvent({
-      delay: 60,
+      delay: 70,
       callback: () => {
         if (i < story.length) {
           writtenString += story.charAt(i)
@@ -375,14 +383,13 @@ class playGame extends Phaser.Scene {
       if (!this.player.anims.isPlaying) {
         this.player.anims.play('run')
       } else {
-        score += 0.03
+        score += 0.05
         scoreText.setText(Math.round(score))
       }
     }, null, this)
 
     // setting collisions between the player and the coin group
     this.physics.add.collider(this.player, this.coinGroup, function (player, coin) {
-      this.physics.world.removeCollider(coin)
       this.tweens.add({
         targets: coin,
         y: coin.y - 100,
@@ -392,7 +399,6 @@ class playGame extends Phaser.Scene {
         callbackScope: this,
         onComplete: function () {
           score += 5
-          console.log('hi')
           this.coinGroup.killAndHide(coin)
           this.coinGroup.remove(coin)
           scoreText.setText(Math.round(score))
@@ -528,6 +534,7 @@ class playGame extends Phaser.Scene {
   }
 
   showGameOver () {
+    document.cookie = `score=${Math.round(score)}`
     this.scene.start('GameOver', { score: this.score })
   }
 
@@ -850,6 +857,9 @@ class InputPanel extends Phaser.Scene {
     } else if (code === Phaser.Input.Keyboard.KeyCodes.BACKSPACE || code === Phaser.Input.Keyboard.KeyCodes.DELETE) {
       this.cursor.set(8, 2)
       this.pressKey()
+    } else if (code === Phaser.Input.Keyboard.KeyCodes.ENTER) {
+      this.cursor.set(9, 2)
+      this.pressKey()
     } else if (code >= Phaser.Input.Keyboard.KeyCodes.A && code <= Phaser.Input.Keyboard.KeyCodes.Z) {
       code -= 65
 
@@ -994,4 +1004,20 @@ class Highscore extends Phaser.Scene {
   updateName (name) {
     this.playerText.setText(name)
   }
+}
+
+function getCookie (cname) {
+  var name = cname + '='
+  var decodedCookie = decodeURIComponent(document.cookie)
+  var ca = decodedCookie.split(';')
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i]
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1)
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length)
+    }
+  }
+  return ''
 }
