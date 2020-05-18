@@ -3,6 +3,8 @@ let score = 0
 let scoreText
 let name = ''
 
+document.cookie = 'username='
+
 // global game options
 let gameOptions = {
   // platform speed range, in pixels per second
@@ -235,6 +237,7 @@ class nameScreen extends Phaser.Scene {
     this.scene.stop('InputPanel')
     name = this.playerText.text
     document.cookie = `username=${name}`
+    post(getCookie('username'), 0)
   }
 
   updateName (name) {
@@ -685,53 +688,6 @@ function resize () {
   }
 }
 
-fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'x-apikey': '5e9e2bed436377171a0c267d'
-  }
-}).then(function (response) {
-  // The API call was successful!
-  if (response.ok) {
-    return response.json()
-  } else {
-    return Promise.reject(response)
-  }
-}).then(function (data) {
-  // This is the JSON from our response
-  console.log('I was here')
-  console.log(data)
-}).catch(function (err) {
-  // There was an error
-  console.warn('Something really went wrong.', err)
-})
-
-let data = { name: name, score: Math.round(score) }
-fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
-  method: 'POST',
-  body: JSON.stringify(data),
-  headers: {
-    'Content-Type': 'application/json',
-    'x-apikey': '5e9e2bed436377171a0c267d'
-  },
-  referrer: 'no-referrer'
-}).then(function (response) {
-  // The API call was successful!
-  if (response.ok) {
-    return response.json()
-  } else {
-    return Promise.reject(response)
-  }
-}).then(function (data) {
-  // This is the JSON from our response
-  console.log('Dumebi is cool')
-  console.log(data)
-}).catch(function (err) {
-  // There was an error
-  console.warn('Something went wrong.', err)
-})
-
 function isMobileDevice () {
   return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
 }
@@ -1024,4 +980,60 @@ function getCookie (cname) {
     }
   }
   return ''
+}
+
+function get () {
+  fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-apikey': '5e9e2bed436377171a0c267d'
+    }
+  }).then(function (response) {
+  // The API call was successful!
+    if (response.ok) {
+      return response.json()
+    } else {
+      return Promise.reject(response)
+    }
+  }).then(function (data) {
+  // This is the JSON from our response
+    console.log('I was here')
+    console.log(data)
+  }).catch(function (err) {
+  // There was an error
+    console.warn('Something really went wrong.', err)
+  })
+}
+
+let response
+
+function post (name, score) {
+  let dater = { name: name, score: score }
+  fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
+    method: 'POST',
+    body: JSON.stringify(dater),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-apikey': '5e9e2bed436377171a0c267d'
+    },
+    referrer: 'no-referrer'
+  }).then(function (response) {
+    // The API call was successful!
+    if (response.ok) {
+      return response.json()
+    } else {
+      return Promise.reject(response)
+    }
+  }).then(function (data) {
+    // response = JSON.parse(data)
+    // document.cookie = `id=${response.id}`
+    console.log(document.cookie)
+    // This is the JSON from our response
+    console.log('Dumebi is cool')
+    console.log(data)
+  }).catch(function (err) {
+    // There was an error
+    console.warn('Something went wrong.', err)
+  })
 }
