@@ -940,12 +940,12 @@ class Highscore extends Phaser.Scene {
 
     this.add.bitmapText(350, 150, 'arcade', 'RANK  SCORE   NAME').setTint(0xff00ff)
     firstPlace = this.add.bitmapText(350, 200, 'arcade', '').setTint(0xff0000)
-    firstPlace.setMask(mask)
 
     let graphics = this.make.graphics()
     graphics.fillRect(300, 200, 700, 700)
 
     let mask = new Phaser.Display.Masks.GeometryMask(this, graphics)
+    firstPlace.setMask(mask)
 
     let zone = this.add.zone(300, 200, 700, 700).setOrigin(0).setInteractive()
 
