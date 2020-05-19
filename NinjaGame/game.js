@@ -2,6 +2,8 @@ let game
 let score = 0
 let scoreText
 let name = ''
+let rank
+let firstPlace
 
 // global game options
 let gameOptions = {
@@ -182,6 +184,7 @@ class titleScreen extends Phaser.Scene {
   clickLeaderboard () {
     this.scene.start('Highscore')
     this.scene.launch('Starfield')
+    get(getCookie('username'), getCookie('score'))
   }
 
   clickStart () {
@@ -663,6 +666,7 @@ class GameOver extends Phaser.Scene {
   clickLeaderboard () {
     this.scene.start('Highscore')
     this.scene.launch('Starfield')
+    get(getCookie('username'), getCookie('score'))
   }
 
   clickTryAgain () {
@@ -921,46 +925,40 @@ class Highscore extends Phaser.Scene {
       key: 'Highscore',
       active: false
     })
-    this.playerText
   }
 
   preload () {
-    this.load.image('block', 'assets/block.png')
-    this.load.image('rub', 'assets/rub.png')
-    this.load.image('end', 'assets/end.png')
-
+    this.load.image('back2', 'assets/backtogame.png')
     this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
   }
 
   create () {
-    this.add.bitmapText(350, 350, 'arcade', 'RANK  SCORE   NAME').setTint(0xff00ff)
-    this.add.bitmapText(350, 400, 'arcade', '1ST   ' + Math.round(score)).setTint(0xff0000)
+    let back2game = this.add.image(100, 100, 'back2').setOrigin(0, 0)
+    back2game.setScale(0.6)
+    back2game.setInteractive({ useHandCursor: true })
+    back2game.on('pointerdown', () => this.clickBack())
 
-    this.playerText = this.add.bitmapText(830, 400, 'arcade', '').setTint(0xff0000)
+    this.add.bitmapText(350, 150, 'arcade', 'RANK  SCORE   NAME').setTint(0xff00ff)
+    firstPlace = this.add.bitmapText(350, 200, 'arcade', '').setTint(0xff0000)
+    firstPlace.setMask(mask)
 
-    //  Do this, otherwise this Scene will steal all keyboard input
-    this.input.keyboard.enabled = true
+    let graphics = this.make.graphics()
+    graphics.fillRect(300, 200, 700, 700)
 
-    this.scene.launch('InputPanel')
+    let mask = new Phaser.Display.Masks.GeometryMask(this, graphics)
 
-    let panel = this.scene.get('InputPanel')
+    let zone = this.add.zone(300, 200, 700, 700).setOrigin(0).setInteractive()
 
-    //  Listen to events from the Input Panel scene
-    panel.events.on('updateName', this.updateName, this)
-    panel.events.on('submitName', this.submitName, this)
+    zone.on('pointermove', function (pointer) {
+      if (pointer.isDown) {
+        firstPlace.y += (pointer.velocity.y / 10)
+        firstPlace.y = Phaser.Math.Clamp(firstPlace.y, -400, 300)
+      }
+    })
   }
 
-  submitName () {
-    this.scene.stop('InputPanel')
-
-    this.add.bitmapText(350, 450, 'arcade', '2ND   40000    ANT').setTint(0xff8200)
-    this.add.bitmapText(350, 500, 'arcade', '3RD   30000    .-.').setTint(0xffff00)
-    this.add.bitmapText(350, 550, 'arcade', '4TH   20000    BOB').setTint(0x00ff00)
-    this.add.bitmapText(350, 600, 'arcade', '5TH   10000    ZIK').setTint(0x00bfff)
-  }
-
-  updateName (name) {
-    this.playerText.setText(name)
+  clickBack () {
+    this.scene.start('PlayGame')
   }
 }
 
@@ -980,7 +978,7 @@ function getCookie (cname) {
   return ''
 }
 
-function get () {
+function get (name, score) {
   fetch('https://penguinjaleaderboard-a704.restdb.io/rest/score', {
     method: 'GET',
     headers: {
@@ -996,8 +994,14 @@ function get () {
     }
   }).then(function (data) {
   // This is the JSON from our response
+    rank = data.sort((a, b) => (a.score > b.score) ? -1 : 1)
     console.log('I was here')
-    console.log(data)
+    console.log(rank)
+    let leader = ''
+    for (let i = 0; i < rank.length; i++) {
+      leader += ' ' + (i + 1) + '     ' + rank[i].score + '    ' + rank[i].name + '\n\n'
+    }
+    firstPlace.setText(leader)
   }).catch(function (err) {
   // There was an error
     console.warn('Something really went wrong.', err)
