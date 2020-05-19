@@ -928,7 +928,7 @@ class Highscore extends Phaser.Scene {
   }
 
   preload () {
-    this.load.image('back2', 'assets/backtogame.png')
+    this.load.image('back2', 'assets/backhome.png')
     this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
   }
 
@@ -958,7 +958,7 @@ class Highscore extends Phaser.Scene {
   }
 
   clickBack () {
-    this.scene.start('PlayGame')
+    this.scene.start('TitleScreen')
   }
 }
 
@@ -999,7 +999,7 @@ function get (name, score) {
     console.log(rank)
     let leader = ''
     for (let i = 0; i < rank.length; i++) {
-      leader += ' ' + (i + 1) + '     ' + rank[i].score + '    ' + rank[i].name + '\n\n'
+      leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
     }
     firstPlace.setText(leader)
   }).catch(function (err) {
