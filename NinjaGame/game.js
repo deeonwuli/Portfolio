@@ -5,6 +5,8 @@ let name = ''
 let rank
 let firstPlace
 
+console.log(document.cookie)
+
 // global game options
 let gameOptions = {
   // platform speed range, in pixels per second
@@ -237,7 +239,7 @@ class nameScreen extends Phaser.Scene {
     this.scene.switch('StoryScreen')
     this.scene.stop('InputPanel')
     name = this.playerText.text
-    document.cookie = `username=${name}`
+    document.cookie = `username=${name}; expires=`
     post(getCookie('username'), 0)
   }
 
