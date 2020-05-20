@@ -4,6 +4,9 @@ let scoreText
 let name = ''
 let rank
 let firstPlace
+let page = 1
+let previous
+let next
 
 console.log(document.cookie)
 
@@ -931,6 +934,7 @@ class Highscore extends Phaser.Scene {
 
   preload () {
     this.load.image('back2', 'assets/backhome.png')
+    this.load.image('next', 'assets/next.png')
     this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
   }
 
@@ -940,23 +944,59 @@ class Highscore extends Phaser.Scene {
     back2game.setInteractive({ useHandCursor: true })
     back2game.on('pointerdown', () => this.clickBack())
 
-    this.add.bitmapText(350, 150, 'arcade', 'RANK  SCORE   NAME').setTint(0xff00ff)
+    let line = this.add.bitmapText(350, 150, 'arcade', 'RANK  SCORE   NAME').setTint(0xff00ff)
+    line.setScale(0.85)
+
     firstPlace = this.add.bitmapText(350, 200, 'arcade', '').setTint(0xff0000)
+    firstPlace.setScale(0.85)
 
-    let graphics = this.make.graphics()
-    graphics.fillRect(300, 200, 700, 700)
+    previous = this.add.bitmapText(900, 700, 'arcade', 'Previous').setTint(0xffffff)
+    previous.setScale(0.6)
+    previous.setInteractive({ useHandCursor: true })
+    previous.on('pointerdown', () => this.clickPrevious())
 
-    let mask = new Phaser.Display.Masks.GeometryMask(this, graphics)
-    firstPlace.setMask(mask)
+    next = this.add.bitmapText(1100, 700, 'arcade', 'Next').setTint(0xffffff)
+    next.setScale(0.6)
+    next.setInteractive({ useHandCursor: true })
+    next.on('pointerdown', () => this.clickNext())
+  }
 
-    let zone = this.add.zone(300, 200, 700, 700).setOrigin(0).setInteractive()
-
-    zone.on('pointermove', function (pointer) {
-      if (pointer.isDown) {
-        firstPlace.y += (pointer.velocity.y / 10)
-        firstPlace.y = Phaser.Math.Clamp(firstPlace.y, -400, 300)
+  clickPrevious () {
+    page--
+    next.setVisible(true)
+    let leader = ''
+    if (rank.length <= (10 * page)) {
+      previous.setVisible(false)
+      for (let i = 10 * (page - 1); i < rank.length; i++) {
+        leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
       }
-    })
+      firstPlace.setText(leader)
+    } else if (rank.length > (10 * page)) {
+      previous.setVisible(true)
+      for (let i = 10 * (page - 1); i < 10 * page; i++) {
+        leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
+      }
+      firstPlace.setText(leader)
+    }
+  }
+
+  clickNext () {
+    page++
+    previous.setVisible(true)
+    let leader = ''
+    if (rank.length <= (10 * page)) {
+      next.setVisible(false)
+      for (let i = 10 * (page - 1); i < rank.length; i++) {
+        leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
+      }
+      firstPlace.setText(leader)
+    } else if (rank.length > (10 * page)) {
+      next.setVisible(true)
+      for (let i = 10 * (page - 1); i < (10 * page); i++) {
+        leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
+      }
+      firstPlace.setText(leader)
+    }
   }
 
   clickBack () {
@@ -1000,10 +1040,20 @@ function get (name, score) {
     console.log('I was here')
     console.log(rank)
     let leader = ''
-    for (let i = 0; i < rank.length; i++) {
-      leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
+    previous.setVisible(false)
+    if (rank.length <= 10) {
+      next.setVisible(false)
+      for (let i = 0; i < rank.length; i++) {
+        leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
+      }
+      firstPlace.setText(leader)
+    } else if (rank.length > 10) {
+      next.setVisible(true)
+      for (let i = 0; i < 10; i++) {
+        leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
+      }
+      firstPlace.setText(leader)
     }
-    firstPlace.setText(leader)
   }).catch(function (err) {
   // There was an error
     console.warn('Something really went wrong.', err)
