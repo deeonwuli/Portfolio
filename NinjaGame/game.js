@@ -1043,7 +1043,6 @@ function get (name, score) {
     console.log('I was here')
     console.log(rank)
     let leader = ''
-    previous.setVisible(false)
     if (rank.length <= 10) {
       next.setVisible(false)
       for (let i = 0; i < rank.length; i++) {
