@@ -228,6 +228,8 @@ class nameScreen extends Phaser.Scene {
     this.playerText = this.add.bitmapText(570, 300, 'arcade', '').setTint(0xffffff)
     this.playerText.setScale(2)
 
+    this.add.bitmapText(400, 600, 'arcade', 'slide across on-screen keyboard').setScale(0.5)
+
     this.input.keyboard.enabled = true
 
     this.scene.launch('InputPanel')
@@ -934,7 +936,6 @@ class Highscore extends Phaser.Scene {
 
   preload () {
     this.load.image('back2', 'assets/backhome.png')
-    this.load.image('next', 'assets/next.png')
     this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml')
   }
 
@@ -954,11 +955,13 @@ class Highscore extends Phaser.Scene {
     previous.setScale(0.6)
     previous.setInteractive({ useHandCursor: true })
     previous.on('pointerdown', () => this.clickPrevious())
+    previous.setVisible(false)
 
     next = this.add.bitmapText(1100, 700, 'arcade', 'Next').setTint(0xffffff)
     next.setScale(0.6)
     next.setInteractive({ useHandCursor: true })
     next.on('pointerdown', () => this.clickNext())
+    next.setVisible(false)
   }
 
   clickPrevious () {
