@@ -967,9 +967,6 @@ class Highscore extends Phaser.Scene {
   clickPrevious () {
     page--
     next.setVisible(true)
-    if (page <= 1) {
-      previous.setVisible(false)
-    }
     let leader = ''
     if (rank.length <= (10 * page)) {
       previous.setVisible(false)
@@ -983,6 +980,9 @@ class Highscore extends Phaser.Scene {
         leader += ' ' + (i + 1) + '    ' + rank[i].score + '      ' + rank[i].name + '\n\n'
       }
       firstPlace.setText(leader)
+    }
+    if (page <= 1) {
+      previous.setVisible(false)
     }
   }
 
