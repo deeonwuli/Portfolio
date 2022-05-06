@@ -1,9 +1,14 @@
+import ContactSection from "./components/contact";
+import IntroSection from "./components/intro";
 import HomeLayout from "./components/layout";
+import ProjectsSection from "./components/projects";
 
 export function App() {
   return(
     <HomeLayout>
-      <h1 className="text-3xl text-blue-500">Hello my name duby!</h1>
+      <IntroSection />
+      <ProjectsSection />
+      <ContactSection />
     </HomeLayout>
   ) 
 }
